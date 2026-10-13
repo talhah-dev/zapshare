@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { QueryProvider } from "@/components/providers/query-provider"
+import { RoomProvider } from "@/components/providers/room-provider"
 import { ThemeProvider } from "@/components/theme-provider"
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" })
@@ -51,10 +52,12 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <QueryProvider>
-            <TooltipProvider>
-              {children}
-              <Toaster position="bottom-right" />
-            </TooltipProvider>
+            <RoomProvider>
+              <TooltipProvider>
+                {children}
+                <Toaster position="bottom-right" />
+              </TooltipProvider>
+            </RoomProvider>
           </QueryProvider>
         </ThemeProvider>
       </body>

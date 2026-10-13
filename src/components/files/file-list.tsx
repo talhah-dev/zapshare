@@ -4,6 +4,7 @@ import { useState } from "react"
 import { SharedFileItem } from "@/types/share"
 import { FileCard } from "@/components/files/file-card"
 import { FileListSkeleton } from "@/components/skeletons/file-list-skeleton"
+import { DeleteFileDialog } from "@/components/files/delete-file-dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -25,6 +26,8 @@ export function FileList({
   onClearAll,
 }: FileListProps) {
   const [searchQuery, setSearchQuery] = useState("")
+  const [fileToDelete, setFileToDelete] = useState<SharedFileItem | null>(null)
+  const [isClearAllOpen, setIsClearAllOpen] = useState(false)
 
   const totalBytes = files.reduce((acc, f) => acc + (f.size || 0), 0)
 
@@ -71,7 +74,7 @@ export function FileList({
             <Button
               variant="ghost"
               size="sm"
-              onClick={onClearAll}
+              onClick={() => setIsClearAllOpen(true)}
               className="h-8 px-2 text-xs text-muted-foreground hover:text-destructive"
             >
               <Trash2 className="size-3.5 mr-1" />
@@ -100,10 +103,44 @@ export function FileList({
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {filteredFiles.map((file) => (
-            <FileCard key={file.id} file={file} onDelete={onDelete} />
+            <FileCard
+              key={file.id}
+              file={file}
+              onDelete={() => setFileToDelete(file)}
+            />
           ))}
         </div>
       )}
+
+      <DeleteFileDialog
+        open={!!fileToDelete}
+        onOpenChange={(open) => {
+          if (!open) setFileToDelete(null)
+        }}
+        title="Delete file?"
+        description={`Are you sure you want to delete "${fileToDelete?.name}"? This will permanently remove the file from storage.`}
+        confirmText="Delete File"
+        onConfirm={() => {
+          if (fileToDelete) {
+            onDelete(fileToDelete.id, fileToDelete.storagePath)
+            setFileToDelete(null)
+          }
+        }}
+      />
+
+      <DeleteFileDialog
+        open={isClearAllOpen}
+        onOpenChange={setIsClearAllOpen}
+        title="Clear all shared files?"
+        description={`Are you sure you want to delete all ${files.length} shared ${
+          files.length === 1 ? "file" : "files"
+        }? This action cannot be undone.`}
+        confirmText="Delete All Files"
+        onConfirm={() => {
+          onClearAll()
+          setIsClearAllOpen(false)
+        }}
+      />
     </div>
   )
 }

@@ -7,12 +7,14 @@ import { UploadCloud, FileUp, ImageIcon, FileText, FileArchive } from "lucide-re
 import { toast } from "sonner"
 import { SharedFileItem } from "@/types/share"
 import { uploadFileToStorage } from "@/lib/file-service"
+import { useRoom } from "@/components/providers/room-provider"
 
 interface FileDropzoneProps {
   onFilesUploaded: (newFiles: SharedFileItem[]) => void
 }
 
 export function FileDropzone({ onFilesUploaded }: FileDropzoneProps) {
+  const { roomCode } = useRoom()
   const [isDragging, setIsDragging] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
@@ -44,7 +46,7 @@ export function FileDropzone({ onFilesUploaded }: FileDropzoneProps) {
 
       for (let i = 0; i < filesArray.length; i++) {
         const file = filesArray[i]
-        const uploaded = await uploadFileToStorage(file)
+        const uploaded = await uploadFileToStorage(file, roomCode)
         uploadedResults.push(uploaded)
         const progressPercentage = Math.round(((i + 1) / filesArray.length) * 100)
         setUploadProgress(progressPercentage)

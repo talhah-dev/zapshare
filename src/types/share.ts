@@ -5,6 +5,7 @@ export interface TextMessageItem {
   charCount: number
   wordCount: number
   isPinned?: boolean
+  roomCode?: string
 }
 
 export type FileCategory =
@@ -28,4 +29,5 @@ export interface SharedFileItem {
   blob?: Blob
   storagePath?: string
   publicUrl?: string
+  roomCode?: string
 }

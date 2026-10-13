@@ -6,6 +6,7 @@ create table if not exists text_messages (
   char_count integer not null default 0,
   word_count integer not null default 0,
   is_pinned boolean not null default false,
+  room_code text not null default 'public',
   created_at timestamptz not null default now()
 );
 
@@ -36,6 +37,7 @@ create table if not exists shared_files (
   category text not null default 'other',
   storage_path text not null,
   public_url text not null,
+  room_code text not null default 'public',
   created_at timestamptz not null default now()
 );
 
